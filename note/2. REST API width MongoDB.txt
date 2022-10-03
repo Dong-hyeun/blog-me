@@ -1,0 +1,265 @@
+소스코드 참조: https://github.com/safak/youtube/tree/blog-rest-api
+
+01) 필요한 모듈 설치하기(Installation)
+ - nodejs와 몽고디비를 사용해서 블러그 rest api 설계하기 
+ - 여기부터는 client 폴더와 server 폴더로 나눠서 진행 
+ - 일단 모듈을 설치하기 앞서 my-blog 폴더 경로에서 터미널을 열어서
+   npm init(= 프로제트 초기화)을 해준다. 
+ - 필요한 모듈은 일단 소스코드 깃허브 사이트에서 package.json 내용 복사해서
+   npm i 명령어을 입력해서 설치하기
+   (package.json에 적힌 모듈을 하나씩 설치함)
+ - 몽고디비는 Atlas에서 Clusters 생성한 후 사용
+   (이전에 생성했으므로 디비만 따로 만들어서 사용할 예정)
+
+02) Express 서버 생성하는 방법(How to Create an Express Server?)
+  - express 모듈을 설치한 후 index.js 파일을 만들고 서버를
+    실행할 코드를 작성한다. (index 파일을 참조)
+
+03) 몽고디비 연결(Node.js MongoDB Connection)
+  - Collection(데이터베이스) 생성하기
+   ◎ 몽고디비 cloud.mongodb.com(mongodb Atlas 검색) 사이트에 들어가서 
+     Database → View Monitoring → Collections 에서 Create Database 
+     버튼을 누르고 Collection을 생성한다. (여기서는 blog로 생성)
+   ◎ 몽고디비에 접근하기 Collection url을 환경변수(.env)에 설정한다. 
+     MONGO_URL = mongodb url 
+     
+   ◎ 몽고디비 url 은 Database → Connect 을 클릭하면 모달창이 뜨는데 
+     여기서 Connect your application 을 클릭한다. 그러면 
+     mongodb+srv:// ~ 이러한 형태의 url을 복사해서 환경변수에 
+     설정하면된다. 
+  
+  - 몽고디비에 연결하기전에 다른 사람이 몽고디비 api key를 볼 수 없게 
+    .env 파일을 만들어서 관리해야한다. 
+   ◎ .env 파일은 루트 폴더(= dotenv를 설치한 경로)생성한다. 
+   ◎ 환경변수를 설정할 때는 대문자와 언더바(_)로 작성한다. 
+
+  - 몽구스(node에서 몽고디비를 쉽게 사용할 수 있게 도와주는 모듈)과
+    dotenv(환경변수를 설정한 파일을 불러옴)을 import 한다. 
+
+  - 설정한 환경 변수를 사용하기 위해 dotenv.config(); 추가  
+
+  - 몽구스 연결하기
+  mongoose.connect('url', {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+  });   
+
+
+04) 몽고디비 스키마(Models) 생성하기(Node.js MongoDB Creating Models)
+  - models, routes 폴더 생성
+  - models, routes 각 폴더에 Category, Post, 
+    User관련 파일 생성
+  - routes에 auth 파일 추가 
+    → 사용자의 인증 관련 라우터 관리  
+  - 먼저 models에서 각 파일들의 스키마를 정의
+   → 스키마를 하나 작성하면 그것을 복사해서 수정하면 
+     스키마 정의하기가 편함
+   
+   (스키마 정의관련 속성)
+   type
+    → type을 지정
+
+   required: true
+    → 필수로 입력할지를 지정: true이면 필수로 입력 
+
+   unique: true, 
+    → 동일한 컬럼을 가지지 않게 고유한 값으로 설정, 
+      만약 아이디를 unique: true로 설정했으면 동일한 
+      아이디로 생성할 수 없게 된다.
+
+   profilePic 스키마 
+   → url를 전달받아서 저장하므로 string 타입 지정 
+   → 회원가입할 때 프로피 사진이 필요하지 않으므로 
+      default: ''; 이와같이 기본값을 빈문자열로 설정 
+
+   timestamps: true
+   → 생성 날짜 및 업데이트된 날짜를 자동으로 생성해준다. 
+     물론 원하는 날짜를 받아서 저장할 수도 있다.
+
+05) 로그인과 회원가입 라우터 생성(Node.js MongoDB Login and Register Routes)
+ - 회원가입 및 로그인 라우터 생성 
+ - postman으로 요청에 대한 처리가 잘 작동되는지 확인 
+
+  1) 회원가입 로직 작성하기
+  - auth 부터 하나씩 라우터 설정 및 로직 구현하기 
+    → 인증관련 라우터 로직을 작성한 후 제대로 요청에 따른 
+      결과를 잘 작동되는데 포스트맨을 사용해서 테스트를 해보자! 
+
+  (포스트맨 사용)
+   1. New 버튼을 클릭해서 Request 생성하기 
+   2. Request name(ex: blog), Folder(ex: resister) 생성
+   3. 테스트 해보기 
+    - 라우팅에 적절한 메서드(get, post, put, delete)를 선택한 후
+      서버 api 주소를 입력하고 body를 선택후 raw로 지정한다.  
+
+    - 그 다음 JSON 형식으로 지정한 다음 아래와 같이 body를 작성한다. 
+      (작성할 때 중괄호 안에 보낼 내용들을 입력한다. )
+
+        {
+          // 요청을 보낼 내용들
+        }  
+
+    - body를 작성했다면 send 버튼을 눌러 결과를 확인하면된다.  
+    - 실제 디비에 잘 들어왔는지 몽고디비 Clusters로 확인하기 
+    - 비밀번호 암호화를 설정을 위한 bcrypt 라이브러리 설치 및 적용하기
+     → 자세한 내용은 John Ahn님의 기본강의에 자세히 기록함 
+
+
+  1) 로그인 로직 작성하기 
+   - bcrypt 라이브러리를 사용해서 암호화해서 저장한 비밀번호를 
+     
+
+
+
+06) 유저 CRUD(Node.js MongoDB User CRUD)
+   - 유저 정보 변경 라우팅 처리하기 
+    ◎ 해당 유저id로 유저의 정보를 수정 
+    ◎ 유저의 비밀번호를 다시 해쉬화하기 
+     const salt = await bcrypt.genSalt(10);
+     req.body.password = await bcrypt.hash(req.body.password, salt);
+     → req.body로 담겨지며 이것으로 몽고디비에 접근
+
+    ◎ findByIdAndUpdate 메서드를 사용, 인자로 유저id(req.params.id로 
+      가져올 수 있다.)와 req.body로 유저 정보를 담고, new: true를 
+      지정해서 쿼리 결과를 변경된 이후의 값을 반환하도록 처리한다. 
+      → 몽고디비에서 전달된 유저id로 유저 정보를 조회해서 수정하게 된다.
+
+    ◎ 정상적으로 디비에 데이터가 변경되면 아래와 같이 작성
+      res.status(200).json(updateUser); 
+      이렇게 변경된 결과를 다시 전달한다.
+       
+   - 유저 정보 삭제 라우팅 처리하기 
+    ◎ 변경과는 달리 삭제 라우팅에서는 비번 해쉬화하는 작업이 필요없다.
+    ◎ 삭제할 유저를 조회하는 방식 역시 유저를 변경할 때 했던 방식과 동일
+      즉, 유저id로 조회한다.
+    ◎ 삭제한 유저의 post 삭제 
+      await Post.deleteMany({ username: user.username });
+
+    ※ 결과가 잘 나오는지 포스트맨으로 확인하기   
+
+
+  💡 Post, Category 라우팅 처리 로직 작성할 때 확인사항
+    ✔ 각 crud 라우팅 로직 구현
+    ✔ postman으로 요청을 보내고 응답된 결과가 잘 나오는 지 확인!
+    ✔ MongoDB Compass에서 데이터가 잘 담겨졋는지도 확인!
+
+07) Post CRUD(Node.js Post CRUD)
+  → 유저 route에서 작성한 거 복사해서 수정해서 사용하면 편함 
+  → 포스트 하나만 요청할 때는 '/:id' 로 요청해야한다. 
+
+  - POST 생성하기
+    router.post('/:id', async (req, res) => { ...}
+
+    const newPost = new Category(req.body);
+    const savedPost = await newPost.save();
+    → Post 모델을 불러와서 요청된 정보를 디비에 저장한다.
+    → save 메서드는 이름처럼 디비에 저장해주고 (이때 비동기로
+      처리해줘야한다.) 그 결과를 반환해준다.
+      (반환된 결과물을 응답해주면 된다.)       
+
+   💡 여기부터 코드에 주석으로 정리함
+  - DELETE 삭제하기
+    router.delete('/:id', async (req, res) => {...}
+
+  - UPDATE 변경하기
+    router.update('/:id', async (req, res) => {...}
+
+  - get 조회하기
+   → router.get('/:id', async (req, res) => {...}
+     router.delete('/', async (req, res) => {...}
+
+  ※ 실습방법은 하나씩 결과를 확인해보며 따라쳐보면서 익힌다.
+   ◎ postman으로 요청을 보내고, 몽고디비 Compass에서 디비에 
+     데이터가 잘 들어왔는지 확인하면된다. 
+
+   ◎ 나중에 리액트로 프론트엔드 부분 완성하면 프론트엔드에서도
+     응답된 결과를 확인해볼 수 있다.   
+
+08) Query 요청하여 모든 게시글 가져오기(Node.js Request Query)
+  → 모든 post를 가져올 때는 '/' 으로 요청 
+  → /user, /cat 로 요청한 경우에 대한 라우팅 처리 
+
+  await Post.find({
+    categories: {
+      $in: [categoriesName],
+    },
+  });
+  ◎ Post 모델에서 categories 내부에 categories 이름이
+    포함되어 있으면 이 항목을 찾아 게시물에 랜더링함
+
+  else { posts = await Post.find(); }
+  ◎ username, categories으로 요청되지 않았다면 
+    모든 게시글을 랜더링
+
+
+09) 카테고리 추가 및, GET과 POST 요청(GET and POST Category)
+ - 카테고리 라우팅 처리하기 
+  → post과는 달리 GET, POST 요청에 따른 처리 로직만
+    구현한다.
+
+10) Upload 파일 REST API 설계 (Node.js Upload File REST API)
+ - multer 패키지 설치하기 
+  → 파일 업로드를 위해 사용되는 multipart/form-data 를 다루기 
+    위해서는 multer 라는 패키지이 필요하다. 
+  ◎ npm i multer
+   또는 yarn add multer
+
+ - 설치한 multer 패키지를 불러오기 
+  ◎ const multer = require('multer');
+
+ 💡 multer 에 대한 자세한 내용은 제로초 블러그에 
+   있으니 찾아볼것
+
+ - 업로드된 이미지 파일을 보관할 폴더를 생성한다.
+  → 이 폴더는 root 폴더(여기선 my-blog 안에)에 생성
+    물론 server 폴더에 해도 상관없다.
+    ㄴ> 이때는 경로를 잘 넣어야한다. 
+    ◎ "server/uploads"
+
+  → 여기선 uploads 폴더로 생성   
+
+ - 포스트맨에서 테스트할 때 
+  ◎ 리액트에서 이미지 관련된 로직을 통해 요청 처리
+  ◎ 포스트맨에서 테스트할 때는 그냥 이미지 파일명을
+    전달해준다. 
+  ◎ 주의
+    → cb(null, req.body.name); 이부분에 
+      req.body.name이 아닌 임의로 포스트맨에서 
+      전달할 파일명을 적어줘야한다. 
+    ◎ cb(null, image.jpeg)  
+
+    → raw가 아닌 form-data로 선택한 후 KEY: file, 
+      value는 Select Files를 클릭해서 전달할 
+      이미지를 불러와서 요청한다.
+
+
+[더미 유저 데이터]
+{
+   "username": "mike",
+   "email": "mike@gmail.com",
+   "password": "123456"
+},
+{
+   "username": "donghyun",
+   "email": "donghyun@gmail.com",
+   "password": "123456"
+}
+
+
+💡 보완되어야 할 점이 많다. 이 부분은 John Ahn님 
+   강좌와 다른 사람들이 구현한 프로젝트를 참조해서 
+   보완해나간다.
+    - 특히 post의 작성자 부분은 user 모델을 
+      참조하는 것이 좋다. 
+
+    - 블러그와 같이 user, post와의 관계에는 
+      관계형 디비를 사용하는 것이 좋을 거같다.
+      물론 몽고디비로도 가능하겠지만 
+      (일단 몽고디비로 플젝 진행하고 나서 고민좀 하자)  
+
+    - 인증은 비번을 bcrypt을 사용해서 암호화해서 비교하는
+      방식으로 인증 절차를 처리했지만 jwt 토큰을 사용해서 
+      다시 인증 시스템을 만들어볼 것을 권한다. 
+      → 여기선 세션 기반으로도 구현하지 않음 
+      → 간단하게 비밀번호를 생략한 나머지 유저 정보를 
+        클라이언트에 전달하는 방식으로 보냄 

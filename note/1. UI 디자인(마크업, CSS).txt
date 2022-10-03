@@ -1,0 +1,132 @@
+코드참조: https://github.com/safak/youtube/tree/react-blog-ui
+
+01) 프로젝트 구성하기(How to install a React App)
+ - 프로젝트 생성하기 
+  ◎ npx create-react-app
+  ◎ 불필요한 폴더 및 파일은 제거
+
+ - 글꼴 import
+  ● 글꼴은 index.html head태그에 적용
+
+   ◎ josefin Sans 
+    - 글자두께: 100 - 700 import
+   ◎ lora
+    - 글자두께: 400, 500 ,600 italic import
+   ◎ Varela Round, Varela Round
+    - 글자 두께: 400 (이거 하나만 존재), 각각 import
+
+
+ 02) navbar 구현하기(React navbar tutorial)
+ - TopBar 컴포넌트 생성하기 
+  ● 항상 각 컴포넌트별로 간단한 템플릿을 생성한다. 
+  ● 컴포넌트를 담은 폴더는 대문자로, 컴포넌트 파일은 소문자(카멜)로 작성  
+
+ - 부모 top에 display:flex; 적용하고 
+   자식 topLeft, topRight에는 flex: 3;
+   자식 topCenter에는 flex: 6을 적용해서 
+   3단으로 나누기 
+   → 부모의 너비를 기준으로 해서 3 : 6 : 3 의 비율로 차지
+
+    |   topLeft    |      topCenter        |    topRight    |
+     <-----3------> <---------6--------->  <-------3------->
+
+  - fontAwesome 적용하기 
+   → npm으로 설치해서 적용해도되고 import로 적용해도 되고
+     본인은 강의대로 안하고 @fortawesome/fontawesome-free 라이브러리로 진행
+
+    - fortawesome 패키지 다운 
+     ◎ npm i @fortawesome/fontawesome-free 
+     ◎ 설치한 후 전체에서 사용할 수 있게 index.js에 적용
+      → index.js 상단에 import '@fortawesome/fontawesome-free/js/all.js'; 추가
+      → 사용할 때 <i>태그 class에 사용할 아이콘 클래스명을 지정해주면 된다.
+      → 리액트에서는 class를 지정할 때 className으로 해줘야한다. 
+
+
+ 03) Header 구현하기(Creating React header)
+  - Header, Home 컴포넌트 생성하기 
+  - Header, Home 스타일링하기
+
+    ◎ css: object-fit 속성
+     - <img>나 <video> 요소와 같은 대체 요소의 
+       콘텐츠 크기를 어떤 방식으로 조절해 요소에 
+       맞출 것인지 지정
+
+      ○ fill
+       : 기본값. 주어진 너비와 높이에 딱 맞도록 사이즈를 
+         조절합니다. 이미지의 가로세로 비율은 유지되지 
+         않는다.
+
+      ○ contain 
+       : 가로세로 비율을 유지한 채로 사이즈가 조절되지만, 
+         이미지와 컨테이너 간의 비율이 맞지 않는 경우엔 
+         자리가 남게 된다.
+
+      ○ cover 
+       : 가로세로 비율을 유지한 채로 사이즈가 조절되며, 
+         비율이 맞지 않더라도 이미지를 확대해 컨테이너를 
+         완전히 채운다.
+
+      ○ none 
+       : 아무것도 하지 않고 본래의 이미지 사이즈를 유지  
+
+ 04) flexbox 사용(Using flexbox in React.js)
+   - display: flex 로 수평 정렬
+   - 각 자식 요소들은 flex 속성을 사용해서 
+     나눠준다. 
+     ★ 예를 들어 flex: 3 으로 지정하면 부모 너비를 
+        기준으로 3 비율의 너비를 차지한다. 
+
+ 05) sidebar 구현하기(React sidebar example)
+  - 카테고리 및 소셜 아이콘 요소들 배치하기
+
+ 06) 블러그 포스트 컴포넌트 구현하기(Blog post component)
+   - post 컴포넌트 생성하기 
+    → posts Item이다. 
+    → post 내용을 미리 구현하기
+      (나중에 실제 데이터로 랜더링)
+
+   - 줄(행) 제한 
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* 2줄로 제한 */
+    -webkit-box-orient: vertical;   
+   → -webkit-line-clamp 속성을 사용하려면 
+     위와 같이 display: -webkit-box;과 
+     -webkit-box-orient: vertical; 으로 
+     설정해줘야한다. 기본값은 none이다.
+   → text-overflow: ellipsis 는 줄임표를 
+     표시해준다. 
+
+ 07) single 포스트 컴포넌트 구현하기(Single post component)
+  - single 페이지 구현하기 
+   ◎ <SinglePost/>, <Sidebar /> 페이지를 single 페이지에 
+     import하기 
+     → 각각 부모 single 컴포넌트 너비를 기준으로 9: 3 비율로 나누기
+       singlePost: 9
+       sidebar: 3 (이미 지정됨)
+
+ 08) 새 포스트 컴포넌트 구현하기(Create a new post component)
+  - write 컴포넌트 생성하기 
+  - input:file 의 UI(버튼 눌러서 파일 불러오는 부분)이 마음에 들지 않으므로
+    label 태그를 사용해서 커스텀하기 
+    → label의 속성중 for는 자스의 문법과 혼동될 수 있으므로 htmlFor로 작성
+    → label 태그에 htmlFor로 input:file의 id를 넣어주면 연결이 된다. 
+
+ 09) 유저 설정 컴포넌트 (User settings component)
+  - UserSettings 컴포넌트 만들기 
+   → singlePost 페이지와 마찬가지로 flex: 9 을 지정
+
+ 10) 로그인과 회원가입 페이지 만들기(React Login and Register Page)
+  - 로그인, 회원가입 폼 컴포넌트 만들기 
+  - 로그인 화면에 배경 넣기 
+  - 회원가입은 로그인 컴포넌트를 복사붙여넣고 
+    username만 추가
+ 11) react 라우터 돔 사용(React Router Dom Tutorial)
+  - react-router-dom@버전(여기선 5.2.0) 설치
+  - 아래와 같이 불러와서 사용
+   → import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+  - 라우팅 처리한 후 해당 url로 입력해서 잘 나오는지 확인
+  - topBar에도 라우팅 처리하기 
+  - 마지막으로 user의 상태에 따른 UI 처리
+    → ex) 로그인하지 않으면 write 주소가 들어갈때 로그인 페이지로
+  - 이미지 경로를 설정할 때는 처음 라우팅하기전에는 ./assets/images/이미지명 으로 했지만
+    설정한 이후에는 /앞에 .을 빼야 이미지가 잘 불러와진다. 
